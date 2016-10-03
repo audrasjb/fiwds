@@ -42,7 +42,6 @@ function fiwds_options_page() {
 		$post_types = get_post_types( array( 'public' => true ), 'objects' );
 		foreach ( $post_types as $type => $obj ) {
 			if ( post_type_supports( $type, 'thumbnail' ) ) {
-//			var_dump($obj);
 				if ( $active_tab == $obj->name . '-fiwds-options' ) {
 					echo '<a href="?page=fiwds-options&tab=' . $obj->name . '-fiwds-options" class="nav-tab nav-tab-active">' . $obj->labels->name . '</a>';
 				} else {
@@ -53,14 +52,37 @@ function fiwds_options_page() {
 		?>
 		</h2>
             
-		<form action="options.php" method="post">
-			<?php settings_fields( 'fiwds-options' ); ?>
-			<?php do_settings_sections( 'fiwds-options' ); ?>
-			<br /><br />
-			<input name="Submit" type="submit" value="<?php esc_attr_e( 'Save Changes', 'fiwds-options' ); ?>" class="button button-primary" />
-		</form>
+		<?php do_settings_sections("fiwds-options"); ?>
+
 	</div>
 <?php
+}
+
+/* Display plugin options section by section */
+add_action('admin_init', 'display_options');
+function display_options() {
+	add_settings_section('fiwds_options', 'FIwDS Options', 'display_header_fiwds_content', 'fiwds-options');
+	if(isset($_GET['tab'])) {
+		if($_GET['tab'] == "about-fiwds-options") {
+			add_settings_section('fiwds_options', 'FIwDS Options', 'display_header_fiwds_content', 'fiwds-options');
+		}
+	} else {
+		add_settings_field('About section', 'About section', 'display_about_fiwds_content', 'about-fiwds-options-content', 'about-fiwds-options-content');
+	}
+	
+	function display_header_fiwds_content() {
+		echo '<h1>test</h1>';
+	}
+	
+	function display_about_fiwds_content() {
+		echo '
+		<p>With FIwDS, publishing require to have a featured image with determined size.</p>
+		<p>You can configure custom width and height parameters for the different post types you are using.</p>
+		<p>Use tabs to set up the FIwDS parameters for each of your post types.</p>
+		<p>Obviously, post types have to support featured image to appear in these tabs.</p>
+		<p>Enjoy!</p>
+		';
+	}
 }
 
 add_action( 'admin_init', 'fiwds_admin_init' );
