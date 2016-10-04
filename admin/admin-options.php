@@ -63,9 +63,9 @@ add_action('admin_init', 'display_options');
 function display_options() {
 	if (isset($_GET['tab'])) {
 		if ($_GET['tab'] == "about-fiwds-options") {
-			add_settings_section('fiwds_options', 'About FIwDS', 'display_about_fiwds_options_content', 'fiwds-options');
+			add_settings_section('fiwds_options', __('About FIwDS'), 'display_about_fiwds_options_content', 'fiwds-options');
 		} else {
-			add_settings_section('fiwds_options', 'Edit FIDwDS for this post type', 'display_post_type_fiwds_content', 'fidws-options');
+			add_settings_section('fiwds_options', __('Edit FIDwDS for this post type'), 'display_post_type_fiwds_content', 'fidws-options');
 		}
 	} else {
 		add_settings_section('fiwds_options', 'About FIwDS', 'display_about_fiwds_options_content', 'fiwds-options');
@@ -83,8 +83,8 @@ function display_options() {
 	}
 	
 	// Post type panel
-	function display_post_type_fiwds_content($arg) {
-		echo '<p>'.$arg['title'].'</p>';
+	function display_post_type_fiwds_content($args) {
+		echo '<p>'.esc_html($args['title']).'</p>';
 	}
 }
 
