@@ -11,103 +11,38 @@ function fiwds_admin_add_page() {
 		'fiwds_options_page' 
 	);
 }
+add_action( 'admin_menu', 'fiwds_admin_add_page' );
 
 /*
-* Displaying our options on a tabbed way
+* Displaying our options on a one-paged way at first
 */
-add_action( 'admin_menu', 'fiwds_admin_add_page' );
 function fiwds_options_page() {
 ?>
 	<div class="wrap">
-		<h2><?php _e( 'Featured Images with Determined Sizes', 'fiwds' ) ?></h2>
-		
-		<?php
-		// we check if the page is visited by click on the tabs or on the menu button.
-		// then we get the active tab.
-		$active_tab = "about-fiwds-options";
-		if ( isset($_GET['tab']) ) {
-			$active_tab = $_GET['tab'];
-		}
-		?>
 
-		<!-- wordpress default styling for tabs. -->
-		<h2 class="nav-tab-wrapper">
+		<h2><?php _e( 'Featured Images with Determined Sizes', 'fiwds' ) ?></h2>
+            
 		<?php
-		// The frst tab is the general plugin tab
-		if ( $active_tab == 'about-fiwds-options' ) {
-			echo '<a href="?page=fiwds-options&tab=about-fiwds-options" class="nav-tab nav-tab-active">' . __( 'About FIWDS' , 'fiwds' ) . '</a>';
-		} else {
-			echo '<a href="?page=fiwds-options&tab=about-fiwds-options" class="nav-tab">' . __( 'About FIWDS' , 'fiwds' ) . '</a>';
-		}
+		// Iterate to public posts types registered on the website, which are using native featured images
 		$post_types = get_post_types( array( 'public' => true ), 'objects' );
 		foreach ( $post_types as $type => $obj ) {
 			if ( post_type_supports( $type, 'thumbnail' ) ) {
-				if ( $active_tab == $obj->name . '-fiwds-options' ) {
-					echo '<a href="?page=fiwds-options&tab=' . $obj->name . '-fiwds-options" class="nav-tab nav-tab-active">' . $obj->labels->name . '</a>';
-				} else {
-					echo '<a href="?page=fiwds-options&tab=' . $obj->name . '-fiwds-options" class="nav-tab">' . $obj->labels->name . '</a>';
-				}
+				echo '<h3 class="' . $obj->name . '-fiwds-options-h3">' . $obj->labels->name . '</h3>';
+				// register settings for this post type
+				fiwds_post_type_init_settings($obj);
 			}
 		}
 		?>
-		</h2>
-            
-		<?php do_settings_sections("fiwds-options"); ?>
 
 	</div>
 <?php
 }
 
-/* Display plugin options section by section */
-add_action('admin_init', 'display_options');
-function display_options() {
-	if (isset($_GET['tab'])) {
-		if ($_GET['tab'] == "about-fiwds-options") {
-			add_settings_section('fiwds_options', __('About FIwDS'), 'display_about_fiwds_options_content', 'fiwds-options');
-		} else {
-			$currentPostType = str_replace('-fiwds-options', '', $_GET['tab']);			
-			add_settings_section(
-				'fiwds_options_'.$currentPostType, 
-				__('Edit FIDwDS for ' . $currentPostType), 
-				'display_post_type_fiwds_content', 
-				'fidws-options'
-			);
-			add_settings_field(
-				'fiwds_settings'.$currentPostType, 
-				__('Edit FIDwDS for ' . $currentPostType), 
-				'display_post_type_fiwds_field_active', 
-				'fiwds-options', 
-				'display_post_type_fiwds_content', 
-				array(
-					'option_field_id' => 'fiwds_option_activate_'.$currentPostType,
-					'label_for' => 'fiwds_activate_'.$currentPostType,
-				)
-			);
-			register_setting('fiwds_options_'.$currentPostType, 'fiwds_option_activate_'.$currentPostType);
-		}
-	} else {
-		add_settings_section('fiwds_options', 'About FIwDS', 'display_about_fiwds_options_content', 'fiwds-options');
-	}
-	
-	// About panel	
-	function display_about_fiwds_options_content() {
-		echo '
-		<p>With FIwDS, publishing require to have a featured image with determined size.</p>
-		<p>You can configure custom width and height parameters for the different post types you are using.</p>
-		<p>Use tabs to set up the FIwDS parameters for each of your post types.</p>
-		<p>Obviously, post types have to support featured image to appear in these tabs.</p>
-		<p>Enjoy!</p>
-		';
-	}
-	
-	// Post type panel
-	function display_post_type_fiwds_field_active() {
-		echo '<p>'.__('Edit your post type rules:').'</p>';
-	}
+function fiwds_post_type_init_settings($obj){
+	echo $obj->name;
 }
 
-add_action( 'admin_init', 'fiwds_admin_init' );
-function fiwds_admin_init(){
+function FOO_fiwds_post_type_init_settings(){
 	// Create Settings
 	$option_group = 'fiwds';
 	$option_name = 'fiwds_post_types';
