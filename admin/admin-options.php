@@ -61,20 +61,18 @@ function fiwds_options_page() {
 /* Display plugin options section by section */
 add_action('admin_init', 'display_options');
 function display_options() {
-	add_settings_section('fiwds_options', 'FIwDS Options', 'display_header_fiwds_content', 'fiwds-options');
-	if(isset($_GET['tab'])) {
-		if($_GET['tab'] == "about-fiwds-options") {
-			add_settings_section('fiwds_options', 'FIwDS Options', 'display_header_fiwds_content', 'fiwds-options');
+	if (isset($_GET['tab'])) {
+		if ($_GET['tab'] == "about-fiwds-options") {
+			add_settings_section('fiwds_options', 'About FIwDS', 'display_about_fiwds_options_content', 'fiwds-options');
+		} else {
+			add_settings_section('fiwds_options', 'Edit FIDwDS for this post type', 'display_post_type_fiwds_content', 'fidws-options');
 		}
 	} else {
-		add_settings_field('About section', 'About section', 'display_about_fiwds_content', 'about-fiwds-options-content', 'about-fiwds-options-content');
+		add_settings_section('fiwds_options', 'About FIwDS', 'display_about_fiwds_options_content', 'fiwds-options');
 	}
 	
-	function display_header_fiwds_content() {
-		echo '<h1>test</h1>';
-	}
-	
-	function display_about_fiwds_content() {
+	// About panel	
+	function display_about_fiwds_options_content() {
 		echo '
 		<p>With FIwDS, publishing require to have a featured image with determined size.</p>
 		<p>You can configure custom width and height parameters for the different post types you are using.</p>
@@ -82,6 +80,11 @@ function display_options() {
 		<p>Obviously, post types have to support featured image to appear in these tabs.</p>
 		<p>Enjoy!</p>
 		';
+	}
+	
+	// Post type panel
+	function display_post_type_fiwds_content($arg) {
+		echo '<p>'.$arg['title'].'</p>';
 	}
 }
 
