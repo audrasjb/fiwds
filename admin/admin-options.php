@@ -39,14 +39,55 @@ function fiwds_options_page() {
 }
 
 function fiwds_post_type_init_settings($obj){
-	echo $obj->name;
+	/*
+	* Fields to display:
+	* 	- activate this post type
+	*	- minimum width
+	*	- maximal width
+	*	- minimum height
+	*	- maximal height
+	*/
+	$classAndPostTYpe = 'fiwds_' . $obj->name;
+
+	
+	echo '<table class="form-table"><tr valign="top">';
+
+	echo '<tr valign="top">';
+	echo '<th scope="row"><label for="' . $classAndPostTYpe . '">' . __('Set FIWDS for') . ' ' . $obj->labels->name . '</label></th>';
+	echo '<td><input type="checkbox" name="' . $classAndPostTYpe . '" value="" /></td>';
+	echo '</tr>';
+
+	echo '<tr valign="top">';
+	echo '<th scope="row"><label for="' . $classAndPostTYpe . '_minimal_width">' . __('Set minimal width:') . '</label></th>';
+	echo '<td><input type="text" name="' . $classAndPostTYpe . '" value="" /></td>';
+	echo '</tr>';
+
+	echo '<tr valign="top">';
+	echo '<th scope="row"><label for="' . $classAndPostTYpe . '_maximal_width">' . __('Set maximal width:') . '</label></th>';
+	echo '<td><input type="text" name="' . $classAndPostTYpe . '" value="" /></td>';
+	echo '</tr>';
+
+	echo '<tr valign="top">';
+	echo '<th scope="row"><label for="' . $classAndPostTYpe . '_minimal_height">' . __('Set minimal height:') . '</label></th>';
+	echo '<td><input type="text" name="' . $classAndPostTYpe . '" value="" /></td>';
+	echo '</tr>';
+
+	echo '<tr valign="top">';
+	echo '<th scope="row"><label for="' . $classAndPostTYpe . '_maximal_width">' . __('Set maximal height:') . '</label></th>';
+	echo '<td><input type="text" name="' . $classAndPostTYpe . '" value="" /></td>';
+	echo '</tr>';
+
+	echo '</table>';
+	
+	echo '<p class="submit">';
+	echo '<input type="submit" class="button-primary" value="Mettre à jour" />';
+	echo '</p>';	
+
 }
 
 function FOO_fiwds_post_type_init_settings(){
 	// Create Settings
-	$option_group = 'fiwds';
-	$option_name = 'fiwds_post_types';
-	register_setting( $option_group, $option_name );
+	add_settings_field( $option_name, __('Post Types that require featured images ', 'fiwds' ), 'fiwds_post_types_input_renderer', $page, $settings_section );
 
 	$minimum_size_option = 'fiwds_minimum_size';
 	register_setting( $option_group, $minimum_size_option );
