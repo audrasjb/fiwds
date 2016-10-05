@@ -20,13 +20,13 @@ function fiwds_options_page() {
 ?>
 	<div class="wrap">
 
-		<h2><?php _e( 'Featured Images with Determined Sizes', 'fiwds' ) ?></h2>
+		<h2><?php echo __( 'Featured Images with Determined Sizes', 'fiwds' ) ?></h2>
          
         <form action="options-general.php?page=fiwds-options" method="post">   
 
 			<?php 
 			// Set FIWDS fields
-			settings_fields( 'fiwds_option_group' );
+			settings_fields( 'fiwds-options' );
 			do_settings_fields( 'fiwds-options', 'fiwds_option_group' );
 			
 			// Iterate through public posts types registered on the website, which are using native featured images. Then, display forms for each of them.
@@ -102,7 +102,7 @@ function fiwds_post_type_init_settings($obj){
 				<tr valign="top">
 					<th scope="row">
 						<label for="<?php echo $classAndPostTYpe . '_fiwds_minimal_width'; ?>">
-							<?php echo __('Set minimal width:'); ?>
+							<?php echo __('Set minimal width (px)'); ?>
 						</label>
 					</th>
 					<td>
@@ -116,7 +116,7 @@ function fiwds_post_type_init_settings($obj){
 				<tr valign="top">
 					<th scope="row">
 						<label for="<?php echo $classAndPostTYpe . '_fiwds_maximal_width'; ?>">
-							<?php echo __('Set maximal width:'); ?>
+							<?php echo __('Set maximal width (px)'); ?>
 						</label>
 					</th>
 					<td>
@@ -130,7 +130,7 @@ function fiwds_post_type_init_settings($obj){
 				<tr valign="top">
 					<th scope="row">
 						<label for="<?php echo $classAndPostTYpe . '_fiwds_minimal_height'; ?>">
-							<?php echo __('Set minimal height:'); ?>
+							<?php echo __('Set minimal height (px)'); ?>
 						</label>
 					</th>
 					<td>
@@ -144,7 +144,7 @@ function fiwds_post_type_init_settings($obj){
 				<tr valign="top">
 					<th scope="row">
 						<label for="<?php echo $classAndPostTYpe . '_fiwds_maximal_height'; ?>">
-							<?php echo __('Set maximal height:'); ?>
+							<?php echo __('Set maximal height (px)'); ?>
 						</label>
 					</th>
 					<td>
