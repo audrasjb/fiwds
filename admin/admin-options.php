@@ -22,7 +22,7 @@ function fiwds_options_page() {
 
 		<h2><?php _e( 'Featured Images with Determined Sizes', 'fiwds' ) ?></h2>
          
-        <form action="options.php" method="post">   
+        <form action="options-general.php?page=fiwds-options" method="post">   
 
 			<?php 
 			// Set FIWDS fields
@@ -106,7 +106,11 @@ function fiwds_post_type_init_settings($obj){
 						</label>
 					</th>
 					<td>
-						<input type="text" name="<?php echo $classAndPostTYpe . '_fiwds_minimal_width'; ?>" value="" />
+						<input 
+							type="text" 
+							name="<?php echo $classAndPostTYpe . '_fiwds_minimal_width'; ?>" 
+							value="<?php echo get_option($classAndPostTYpe . '_fiwds_minimal_width'); ?>" 
+						/>
 					</td>
 				</tr>
 				<tr valign="top">
@@ -116,7 +120,11 @@ function fiwds_post_type_init_settings($obj){
 						</label>
 					</th>
 					<td>
-						<input type="text" name="<?php echo $classAndPostTYpe . '_fiwds_maximal_width'; ?>" value="" />
+						<input 
+							type="text" 
+							name="<?php echo $classAndPostTYpe . '_fiwds_maximal_width'; ?>" 
+							value="<?php echo get_option($classAndPostTYpe . '_fiwds_maximal_width'); ?>" 
+						/>
 					</td>
 				</tr>
 				<tr valign="top">
@@ -126,7 +134,11 @@ function fiwds_post_type_init_settings($obj){
 						</label>
 					</th>
 					<td>
-						<input type="text" name="<?php echo $classAndPostTYpe . '_fiwds_minimal_height'; ?>" value="" />
+						<input 
+							type="text" 
+							name="<?php echo $classAndPostTYpe . '_fiwds_minimal_height'; ?>" 
+							value="<?php echo get_option($classAndPostTYpe . '_fiwds_minimal_height'); ?>" 
+						/>
 					</td>
 				</tr>
 				<tr valign="top">
@@ -136,7 +148,11 @@ function fiwds_post_type_init_settings($obj){
 						</label>
 					</th>
 					<td>
-						<input type="text" name="<?php echo $classAndPostTYpe . '_fiwds_maximal_height'; ?>" value="" />
+						<input 
+							type="text" 
+							name="<?php echo $classAndPostTYpe . '_fiwds_maximal_height'; ?>" 
+							value="<?php echo get_option($classAndPostTYpe . '_fiwds_maximal_height'); ?>" 
+						/>
 					</td>
 				</tr>
 			</table>
