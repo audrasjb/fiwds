@@ -28,7 +28,7 @@ function fiwds_options_page() {
 			// Set FIWDS fields
 			settings_fields( 'fiwds-options' );
 			do_settings_fields( 'fiwds-options', 'fiwds_option_group' );
-			
+
 			// Iterate through public posts types registered on the website, which are using native featured images. Then, display forms for each of them.
 			$post_types = get_post_types( array( 'public' => true ), 'objects' );
 			foreach ( $post_types as $type => $obj ) {
@@ -70,7 +70,7 @@ function fiwds_post_type_init_settings($obj){
 	
 	// Display form elements	
 	?>
-	<table class="form-table fiwds_checkbox_required_parent"><tr valign="top">
+	<table class="form-table fiwds_checkbox_required_parent">
 		<tr valign="top">
 			<th scope="row">
 				<label for="<?php echo $classAndPostTYpe . '_fiwds_checkbox_img_required'; ?>">
@@ -98,20 +98,16 @@ function fiwds_post_type_init_settings($obj){
 		</table>
 
 		<div class="fiwds_size_details"> 
-			<table class="form-table"><tr valign="top">
+			<table class="form-table">
 				<tr valign="top">
-					<th scope="row">
-						<label for="<?php echo $classAndPostTYpe . '_fiwds_minimal_width'; ?>">
-							<?php echo __('Set minimal width (px)'); ?>
-						</label>
-					</th>
-					<td>
-						<input 
-							type="text" 
-							name="<?php echo $classAndPostTYpe . '_fiwds_minimal_width'; ?>" 
-							value="<?php echo get_option($classAndPostTYpe . '_fiwds_minimal_width'); ?>" 
-						/>
-					</td>
+<?php
+	add_settings_field(
+		$classAndPostTYpe . '_fiwds_minimal_width', 
+		__('Set minimal width (px)'),
+		'fiwds_display_minimal_size_field', 
+		'fiwds-options'
+	);
+?>
 				</tr>
 				<tr valign="top">
 					<th scope="row">
@@ -159,6 +155,22 @@ function fiwds_post_type_init_settings($obj){
 		</div>
 	</div>	
 	<?php
+	function fiwds_display_minimal_size_field($args) {
+		?>
+					<th scope="row">
+						<label for="<?php echo $classAndPostTYpe . '_fiwds_minimal_width'; ?>">
+							<?php echo __('Set minimal width (px)'); ?><?php echo $args['id']; ?>
+						</label>
+					</th>
+					<td>
+						<input 
+							type="text" 
+							name="<?php echo $classAndPostTYpe . '_fiwds_minimal_width'; ?>" 
+							value="<?php echo get_option($classAndPostTYpe . '_fiwds_minimal_width'); ?>" 
+						/>
+					</td>
+		<?php
+	}
 
 }
 
