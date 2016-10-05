@@ -24,19 +24,23 @@ function fiwds_options_page() {
          
         <form action="options.php" method="post">   
 
-		<?php
-		// Iterate through public posts types registered on the website, which are using native featured images. Then, display forms for each of them.
-		$post_types = get_post_types( array( 'public' => true ), 'objects' );
-		foreach ( $post_types as $type => $obj ) {
-			if ( post_type_supports( $type, 'thumbnail' ) ) {
-				echo '<h3 class="' . $obj->name . '-fiwds-options-h3">' . $obj->labels->name . '</h3>';
-				// register settings for this post type
-				fiwds_post_type_init_settings($obj);
+			<?php 
+			// Set FIWDS fields
+			settings_fields( 'fiwds_option_group' );
+			do_settings_fields( 'fiwds-options', 'fiwds_option_group' );
+			
+			// Iterate through public posts types registered on the website, which are using native featured images. Then, display forms for each of them.
+			$post_types = get_post_types( array( 'public' => true ), 'objects' );
+			foreach ( $post_types as $type => $obj ) {
+				if ( post_type_supports( $type, 'thumbnail' ) ) {
+					echo '<h3 class="' . $obj->name . '-fiwds-options-h3">' . $obj->labels->name . '</h3>';
+					// register settings for this post type
+					fiwds_post_type_init_settings($obj);
+				}
 			}
-		}
-		?>
-		
-			<p><input class="button-primary" name="submit" type="submit" value="<?php echo __( 'Save Changes' ); ?>" /></p>
+			?>
+			
+			<?php submit_button(); ?>
 
         </form>
 
@@ -45,52 +49,95 @@ function fiwds_options_page() {
 }
 
 function fiwds_post_type_init_settings($obj){
+
+	// Get class and post type variable
+	$classAndPostTYpe = 'fiwds_' . $obj->name;
+
 	/*
-	* Fields to display:
+	* Fields:
 	* 	- activate this post type
 	*	- minimum width
 	*	- maximal width
 	*	- minimum height
 	*	- maximal height
 	*/
-	$classAndPostTYpe = 'fiwds_' . $obj->name;
+	register_setting( 'fiwds_option_group', $classAndPostTYpe . '_fiwds_checkbox_img_required' );
+	register_setting( 'fiwds_option_group', $classAndPostTYpe . '_fiwds_checkbox_size_required' );
+	register_setting( 'fiwds_option_group', $classAndPostTYpe . '_fiwds_minimal_width' );
+	register_setting( 'fiwds_option_group', $classAndPostTYpe . '_fiwds_maximal_width' );
+	register_setting( 'fiwds_option_group', $classAndPostTYpe . '_fiwds_minimal_height' );
+	register_setting( 'fiwds_option_group', $classAndPostTYpe . '_fiwds_maximal_height' );
 	
+	// Display form elements	
 	?>
 	<table class="form-table fiwds_checkbox_required_parent"><tr valign="top">
 		<tr valign="top">
-			<th scope="row"><label for="<?php echo $classAndPostTYpe; ?>"><?php echo __('Set required featured image for') . ' ' . $obj->labels->name; ?></label></th>
-			<td><input type="checkbox" class="fiwds_checkbox_img_required" name="<?php echo $classAndPostTYpe; ?>" value="" /></td>
+			<th scope="row">
+				<label for="<?php echo $classAndPostTYpe . '_fiwds_checkbox_img_required'; ?>">
+					<?php echo __('Set required featured image'); ?>
+				</label>
+			</th>
+			<td>
+				<input type="checkbox" class="fiwds_checkbox_img_required" name="<?php echo $classAndPostTYpe . '_fiwds_checkbox_img_required'; ?>" value="" />
+			</td>
 		</tr>
 	</table>
 
 	<div class="fiwds_size_options">
 		<table class="form-table">
 			<tr valign="top">
-				<th scope="row"><label for="<?php echo $classAndPostTYpe; ?>"><?php echo __('Set determined size for these featured images'); ?></label></th>
-				<td><input type="checkbox" class="fiwds_checkbox_size_required" name="<?php echo $classAndPostTYpe; ?>" value="" /></td>
+				<th scope="row">
+					<label for="<?php echo $classAndPostTYpe . '_fiwds_checkbox_size_required'; ?>">
+						<?php echo __('Set determined size'); ?>
+					</label>
+				</th>
+				<td>
+					<input type="checkbox" class="fiwds_checkbox_size_required" name="<?php echo $classAndPostTYpe . '_fiwds_checkbox_size_required'; ?>" value="" />
+				</td>
 			</tr>
 		</table>
 
 		<div class="fiwds_size_details"> 
 			<table class="form-table"><tr valign="top">
 				<tr valign="top">
-					<th scope="row"><label for="<?php echo $classAndPostTYpe; ?>_minimal_width"><?php echo __('Set minimal width:'); ?></label></th>
-					<td><input type="text" name="<?php echo $classAndPostTYpe; ?>" value="" /></td>
+					<th scope="row">
+						<label for="<?php echo $classAndPostTYpe . '_fiwds_minimal_width'; ?>">
+							<?php echo __('Set minimal width:'); ?>
+						</label>
+					</th>
+					<td>
+						<input type="text" name="<?php echo $classAndPostTYpe . '_fiwds_minimal_width'; ?>" value="" />
+					</td>
 				</tr>
-
 				<tr valign="top">
-					<th scope="row"><label for="<?php echo $classAndPostTYpe; ?>_maximal_width"><?php echo __('Set maximal width:'); ?></label></th>
-					<td><input type="text" name="<?php echo $classAndPostTYpe; ?>" value="" /></td>
+					<th scope="row">
+						<label for="<?php echo $classAndPostTYpe . '_fiwds_maximal_width'; ?>">
+							<?php echo __('Set maximal width:'); ?>
+						</label>
+					</th>
+					<td>
+						<input type="text" name="<?php echo $classAndPostTYpe . '_fiwds_maximal_width'; ?>" value="" />
+					</td>
 				</tr>
-
 				<tr valign="top">
-					<th scope="row"><label for="<?php echo $classAndPostTYpe; ?>_minimal_height"><?php echo __('Set minimal height:'); ?></label></th>
-					<td><input type="text" name="<?php echo $classAndPostTYpe; ?>" value="" /></td>
+					<th scope="row">
+						<label for="<?php echo $classAndPostTYpe . '_fiwds_minimal_height'; ?>">
+							<?php echo __('Set minimal height:'); ?>
+						</label>
+					</th>
+					<td>
+						<input type="text" name="<?php echo $classAndPostTYpe . '_fiwds_minimal_height'; ?>" value="" />
+					</td>
 				</tr>
-
 				<tr valign="top">
-					<th scope="row"><label for="<?php echo $classAndPostTYpe; ?>_maximal_width"><?php echo __('Set maximal height:'); ?></label></th>
-					<td><input type="text" name="<?php echo $classAndPostTYpe; ?>" value="" /></td>
+					<th scope="row">
+						<label for="<?php echo $classAndPostTYpe . '_fiwds_maximal_height'; ?>">
+							<?php echo __('Set maximal height:'); ?>
+						</label>
+					</th>
+					<td>
+						<input type="text" name="<?php echo $classAndPostTYpe . '_fiwds_maximal_height'; ?>" value="" />
+					</td>
 				</tr>
 			</table>
 		</div>
