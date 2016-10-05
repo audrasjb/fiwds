@@ -4,7 +4,7 @@ Plugin Name: Featured Images with Determined Sizes (FIWDS)
 Plugin URI: http://jeanbaptisteaudras.com/
 Description: Publishing require to have a featured image with determined size (you can configure custom width and height parameters for different custom post types).
 Author: audrasjb
-Version: 1.2.2
+Version: 0.1
 Author URI: http://jeanbaptisteaudras.com/
 Text Domain: fiwds
 */
@@ -17,6 +17,10 @@ if ( ! defined( 'WPINC' ) ) {
 // Get plugin admin option page
 require_once('admin/admin-options.php');
 
+add_action( 'admin_init', 'fiwds_enqueue_admin_options_js' );
+function fiwds_enqueue_admin_options_js() {
+}
+
 add_action( 'transition_post_status', 'fiwds_guard', 10, 3 );
 function fiwds_guard( $new_status, $old_status, $post ) {
     if ( $new_status === 'publish' && fiwds_should_stop_post_publishing( $post ) ) {
@@ -26,14 +30,18 @@ function fiwds_guard( $new_status, $old_status, $post ) {
 
 add_action( 'admin_enqueue_scripts', 'fiwds_enqueue_edit_screen_js' );
 function fiwds_enqueue_edit_screen_js( $hook ) {
+	// Load admin-options JS for FIWDS
+	wp_register_script( 'fiwds-admin-options-js', plugins_url( '/admin/js/fiwds-admin-options.js', __FILE__ ), array( 'jquery' ) );
+	wp_enqueue_script( 'fiwds-admin-options-js' );
+
     global $post;
     if ( $hook !== 'post.php' && $hook !== 'post-new.php' ) {
         return;
     }
 
     if ( fiwds_is_supported_post_type( $post ) && fiwds_is_in_enforcement_window( $post ) ) {
-        wp_register_script( 'fiwds-admin-js', plugins_url( '/admin/js/fiwds-admin.js', __FILE__ ), array( 'jquery' ) );
-        wp_enqueue_script( 'fiwds-admin-js' );
+        wp_register_script( 'fiwds-post-edit-js', plugins_url( '/admin/js/fiwds-post-edit.js', __FILE__ ), array( 'jquery' ) );
+        wp_enqueue_script( 'fiwds-post-edit-js' );
 
         $minimum_size = get_option( 'fiwds_minimum_size' );
         wp_localize_script(

@@ -21,9 +21,11 @@ function fiwds_options_page() {
 	<div class="wrap">
 
 		<h2><?php _e( 'Featured Images with Determined Sizes', 'fiwds' ) ?></h2>
-            
+         
+        <form action="options.php" method="post">   
+
 		<?php
-		// Iterate to public posts types registered on the website, which are using native featured images
+		// Iterate through public posts types registered on the website, which are using native featured images. Then, display forms for each of them.
 		$post_types = get_post_types( array( 'public' => true ), 'objects' );
 		foreach ( $post_types as $type => $obj ) {
 			if ( post_type_supports( $type, 'thumbnail' ) ) {
@@ -33,6 +35,10 @@ function fiwds_options_page() {
 			}
 		}
 		?>
+		
+			<p><input class="button-primary" name="submit" type="submit" value="<?php echo __( 'Save Changes' ); ?>" /></p>
+
+        </form>
 
 	</div>
 <?php
@@ -48,40 +54,48 @@ function fiwds_post_type_init_settings($obj){
 	*	- maximal height
 	*/
 	$classAndPostTYpe = 'fiwds_' . $obj->name;
-
 	
-	echo '<table class="form-table"><tr valign="top">';
+	?>
+	<table class="form-table fiwds_checkbox_required_parent"><tr valign="top">
+		<tr valign="top">
+			<th scope="row"><label for="<?php echo $classAndPostTYpe; ?>"><?php echo __('Set required featured image for') . ' ' . $obj->labels->name; ?></label></th>
+			<td><input type="checkbox" class="fiwds_checkbox_img_required" name="<?php echo $classAndPostTYpe; ?>" value="" /></td>
+		</tr>
+	</table>
 
-	echo '<tr valign="top">';
-	echo '<th scope="row"><label for="' . $classAndPostTYpe . '">' . __('Set FIWDS for') . ' ' . $obj->labels->name . '</label></th>';
-	echo '<td><input type="checkbox" name="' . $classAndPostTYpe . '" value="" /></td>';
-	echo '</tr>';
+	<div class="fiwds_size_options">
+		<table class="form-table">
+			<tr valign="top">
+				<th scope="row"><label for="<?php echo $classAndPostTYpe; ?>"><?php echo __('Set determined size for these featured images'); ?></label></th>
+				<td><input type="checkbox" class="fiwds_checkbox_size_required" name="<?php echo $classAndPostTYpe; ?>" value="" /></td>
+			</tr>
+		</table>
 
-	echo '<tr valign="top">';
-	echo '<th scope="row"><label for="' . $classAndPostTYpe . '_minimal_width">' . __('Set minimal width:') . '</label></th>';
-	echo '<td><input type="text" name="' . $classAndPostTYpe . '" value="" /></td>';
-	echo '</tr>';
+		<div class="fiwds_size_details"> 
+			<table class="form-table"><tr valign="top">
+				<tr valign="top">
+					<th scope="row"><label for="<?php echo $classAndPostTYpe; ?>_minimal_width"><?php echo __('Set minimal width:'); ?></label></th>
+					<td><input type="text" name="<?php echo $classAndPostTYpe; ?>" value="" /></td>
+				</tr>
 
-	echo '<tr valign="top">';
-	echo '<th scope="row"><label for="' . $classAndPostTYpe . '_maximal_width">' . __('Set maximal width:') . '</label></th>';
-	echo '<td><input type="text" name="' . $classAndPostTYpe . '" value="" /></td>';
-	echo '</tr>';
+				<tr valign="top">
+					<th scope="row"><label for="<?php echo $classAndPostTYpe; ?>_maximal_width"><?php echo __('Set maximal width:'); ?></label></th>
+					<td><input type="text" name="<?php echo $classAndPostTYpe; ?>" value="" /></td>
+				</tr>
 
-	echo '<tr valign="top">';
-	echo '<th scope="row"><label for="' . $classAndPostTYpe . '_minimal_height">' . __('Set minimal height:') . '</label></th>';
-	echo '<td><input type="text" name="' . $classAndPostTYpe . '" value="" /></td>';
-	echo '</tr>';
+				<tr valign="top">
+					<th scope="row"><label for="<?php echo $classAndPostTYpe; ?>_minimal_height"><?php echo __('Set minimal height:'); ?></label></th>
+					<td><input type="text" name="<?php echo $classAndPostTYpe; ?>" value="" /></td>
+				</tr>
 
-	echo '<tr valign="top">';
-	echo '<th scope="row"><label for="' . $classAndPostTYpe . '_maximal_width">' . __('Set maximal height:') . '</label></th>';
-	echo '<td><input type="text" name="' . $classAndPostTYpe . '" value="" /></td>';
-	echo '</tr>';
-
-	echo '</table>';
-	
-	echo '<p class="submit">';
-	echo '<input type="submit" class="button-primary" value="Mettre à jour" />';
-	echo '</p>';	
+				<tr valign="top">
+					<th scope="row"><label for="<?php echo $classAndPostTYpe; ?>_maximal_width"><?php echo __('Set maximal height:'); ?></label></th>
+					<td><input type="text" name="<?php echo $classAndPostTYpe; ?>" value="" /></td>
+				</tr>
+			</table>
+		</div>
+	</div>	
+	<?php
 
 }
 
