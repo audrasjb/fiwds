@@ -1,5 +1,4 @@
 jQuery(document).ready(function($) {
-
 /*
 	// Hide parts of form on load
 	$( '.fiwds_size_options' ).hide();
