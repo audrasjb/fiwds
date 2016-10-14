@@ -174,6 +174,7 @@ function fiwds_post_type_init_settings($obj){
 
 }
 
+/*
 function FOO_fiwds_post_type_init_settings(){
 	// Create Settings
 	add_settings_field( $option_name, __('Post Types that require featured images ', 'fiwds' ), 'fiwds_post_types_input_renderer', $page, $settings_section );
@@ -243,3 +244,4 @@ function fiwds_size_option_renderer(){
 	echo '<input type="number" name="fiwds_minimum_size[width]", value="'.$dimensions["width"].'"> width (px) <br>';
 	echo '<input type="number" name="fiwds_minimum_size[height]", value="'.$dimensions["height"].'"> height (px)<br>';
 }
+*/
