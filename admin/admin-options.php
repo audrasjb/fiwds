@@ -62,16 +62,16 @@ class FiwdsSettingsPage {
 			'fiwds-setting-admin' // Page
 		);
 		add_settings_field(
-			'id_number', // ID
-			'ID Number', // Title
-			array( $this, 'id_number_callback' ), // Callback
+			'fiwds_checkbox_size_required', // ID
+			'Check it to set minimum size for posts', // Title
+			array( $this, 'fiwds_checkbox_size_required_callback' ), // Callback
 			'fiwds-setting-admin', // Page
 			'fiwds_settings_section' // Section
 		);      
 		add_settings_field(
-			'title',
-			'Title',
-			array( $this, 'title_callback' ),
+			'fiwds_minimal_width',
+			'Set minimal width',
+			array( $this, 'fiwds_minimal_width_callback' ),
 			'fiwds-setting-admin',
 			'fiwds_settings_section'
 		);
@@ -80,33 +80,30 @@ class FiwdsSettingsPage {
 	// Fields sanitization – @param array $input Contains all settings fields as array keys
 	public function sanitize( $input ) {
 		$new_input = array();
-		if( isset( $input['id_number'] ) ) {
-			$new_input['id_number'] = absint( $input['id_number'] );
+		if( isset( $input['fiwds_checkbox_size_required'] ) ) {
+			$new_input['fiwds_checkbox_size_required'] = absint( $input['fiwds_checkbox_size_required'] );
 		}
-		if( isset( $input['title'] ) ) {
-			$new_input['title'] = sanitize_text_field( $input['title'] );
+		if( isset( $input['fiwds_minimal_width'] ) ) {
+			$new_input['fiwds_minimal_width'] = absint( $input['fiwds_minimal_width'] );
 		}
 		return $new_input;
 	}
 	
 	// Prints ce section text
 	public function print_section_info() {
-		echo 'Enter your settings below:';
+		echo 'Enter your fiwds settings for POSTS below:';
 	}
 	
 	// Get the settings option array and print one of its values
-	public function id_number_callback() {
-		printf(
-			'<input type="text" id="id_number" name="fiwds_options[id_number]" value="%s" />',
-			isset( $this->options['id_number'] ) ? esc_attr( $this->options['id_number']) : ''
-		);
+	public function fiwds_checkbox_size_required_callback() {
+		echo '<input type="checkbox" id="fiwds_checkbox_size_required" name="fiwds_options[fiwds_checkbox_size_required]" value="1"'. checked(isset($this->options['fiwds_checkbox_size_required']), true, false) .' />';
 	}
 	
 	// Get the settings option array and print one of its values
-	public function title_callback() {
+	public function fiwds_minimal_width_callback() {
 		printf(
-			'<input type="text" id="title" name="fiwds_options[title]" value="%s" />',
-			isset( $this->options['title'] ) ? esc_attr( $this->options['title']) : ''
+			'<input type="text" id="title" name="fiwds_options[fiwds_minimal_width]" value="%s" />',
+			isset( $this->options['fiwds_minimal_width'] ) ? esc_attr( $this->options['fiwds_minimal_width']) : ''
 		);
 	}
 	
