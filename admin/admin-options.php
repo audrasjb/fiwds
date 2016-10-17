@@ -50,17 +50,28 @@ class FiwdsSettingsPage {
     
     // Register and add settings
     public function fiwds_page_init() {
+		// Registering global setting options
 		register_setting(
 			'fiwds_option_group', // Option group
 			'fiwds_options', // Option name
 			array( $this, 'sanitize' ) // Sanitize
 		);
+		// Adding a section
 		add_settings_section(
 			'fiwds_settings_section', // ID
 			'My fiwds Settings', // Title
 			array( $this, 'print_section_info' ), // Callback
 			'fiwds-setting-admin' // Page
 		);
+		// Adding checkbox required featured image option
+		add_settings_field(
+			'fiwds_checkbox_img_required', // ID
+			'Check it to require featured image', // Title
+			array( $this, 'fiwds_checkbox_img_required_callback' ), // Callback
+			'fiwds-setting-admin', // Page
+			'fiwds_settings_section' // Section
+		);      
+		// Adding dimensionned size option
 		add_settings_field(
 			'fiwds_checkbox_size_required', // ID
 			'Check it to set minimum size for posts', // Title
@@ -68,10 +79,35 @@ class FiwdsSettingsPage {
 			'fiwds-setting-admin', // Page
 			'fiwds_settings_section' // Section
 		);      
+		// Adding minimal width option
 		add_settings_field(
 			'fiwds_minimal_width',
 			'Set minimal width',
 			array( $this, 'fiwds_minimal_width_callback' ),
+			'fiwds-setting-admin',
+			'fiwds_settings_section'
+		);
+		// Adding maximal width option
+		add_settings_field(
+			'fiwds_maximal_width',
+			'Set maximal width',
+			array( $this, 'fiwds_maximal_width_callback' ),
+			'fiwds-setting-admin',
+			'fiwds_settings_section'
+		);
+		// Adding minimal height option
+		add_settings_field(
+			'fiwds_minimal_height',
+			'Set minimal height',
+			array( $this, 'fiwds_minimal_height_callback' ),
+			'fiwds-setting-admin',
+			'fiwds_settings_section'
+		);
+		// Adding maximal height option
+		add_settings_field(
+			'fiwds_maximal_height',
+			'Set maximal height',
+			array( $this, 'fiwds_maximal_height_callback' ),
 			'fiwds-setting-admin',
 			'fiwds_settings_section'
 		);
@@ -80,11 +116,23 @@ class FiwdsSettingsPage {
 	// Fields sanitization – @param array $input Contains all settings fields as array keys
 	public function sanitize( $input ) {
 		$new_input = array();
+		if( isset( $input['fiwds_checkbox_img_required'] ) ) {
+			$new_input['fiwds_checkbox_img_required'] = absint( $input['fiwds_checkbox_img_required'] );
+		}
 		if( isset( $input['fiwds_checkbox_size_required'] ) ) {
 			$new_input['fiwds_checkbox_size_required'] = absint( $input['fiwds_checkbox_size_required'] );
 		}
 		if( isset( $input['fiwds_minimal_width'] ) ) {
 			$new_input['fiwds_minimal_width'] = absint( $input['fiwds_minimal_width'] );
+		}
+		if( isset( $input['fiwds_maximal_width'] ) ) {
+			$new_input['fiwds_maximal_width'] = absint( $input['fiwds_maximal_width'] );
+		}
+		if( isset( $input['fiwds_minimal_height'] ) ) {
+			$new_input['fiwds_minimal_height'] = absint( $input['fiwds_minimal_height'] );
+		}
+		if( isset( $input['fiwds_maximal_height'] ) ) {
+			$new_input['fiwds_maximal_height'] = absint( $input['fiwds_maximal_height'] );
 		}
 		return $new_input;
 	}
@@ -95,6 +143,11 @@ class FiwdsSettingsPage {
 	}
 	
 	// Get the settings option array and print one of its values
+	public function fiwds_checkbox_img_required_callback() {
+		echo '<input type="checkbox" id="fiwds_checkbox_img_required" name="fiwds_options[fiwds_checkbox_img_required]" value="1"'. checked(isset($this->options['fiwds_checkbox_img_required']), true, false) .' />';
+	}
+
+	// Get the settings option array and print one of its values
 	public function fiwds_checkbox_size_required_callback() {
 		echo '<input type="checkbox" id="fiwds_checkbox_size_required" name="fiwds_options[fiwds_checkbox_size_required]" value="1"'. checked(isset($this->options['fiwds_checkbox_size_required']), true, false) .' />';
 	}
@@ -104,6 +157,30 @@ class FiwdsSettingsPage {
 		printf(
 			'<input type="text" id="title" name="fiwds_options[fiwds_minimal_width]" value="%s" />',
 			isset( $this->options['fiwds_minimal_width'] ) ? esc_attr( $this->options['fiwds_minimal_width']) : ''
+		);
+	}
+
+	// Get the settings option array and print one of its values
+	public function fiwds_maximal_width_callback() {
+		printf(
+			'<input type="text" id="title" name="fiwds_options[fiwds_maximal_width]" value="%s" />',
+			isset( $this->options['fiwds_maximal_width'] ) ? esc_attr( $this->options['fiwds_maximal_width']) : ''
+		);
+	}
+
+	// Get the settings option array and print one of its values
+	public function fiwds_minimal_height_callback() {
+		printf(
+			'<input type="text" id="title" name="fiwds_options[fiwds_minimal_height]" value="%s" />',
+			isset( $this->options['fiwds_minimal_height'] ) ? esc_attr( $this->options['fiwds_minimal_height']) : ''
+		);
+	}
+
+	// Get the settings option array and print one of its values
+	public function fiwds_maximal_height_callback() {
+		printf(
+			'<input type="text" id="title" name="fiwds_options[fiwds_maximal_height]" value="%s" />',
+			isset( $this->options['fiwds_maximal_height'] ) ? esc_attr( $this->options['fiwds_maximal_height']) : ''
 		);
 	}
 	
