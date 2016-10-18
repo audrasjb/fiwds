@@ -40,14 +40,7 @@ class FiwdsSettingsPage {
 				<?php
 				// This prints out all hidden setting fields
 				settings_fields( 'fiwds_option_group' );
-				// Iterate through public posts types registered on the website, which are using native featured images. Then, display forms for each of them.
-				$post_types = get_post_types( array( 'public' => true ), 'objects' );
-				foreach ( $post_types as $type => $obj ) {
-					if ( post_type_supports( $type, 'thumbnail' ) ) {
-						// register settings for this post type
-						do_settings_sections( 'fiwds-setting-admin' );
-					}
-				}
+				do_settings_sections( 'fiwds-setting-admin' );
 				submit_button();
 				?>
 			</form>
@@ -57,70 +50,76 @@ class FiwdsSettingsPage {
     
     // Register and add settings
     public function fiwds_page_init() {
+		// Registering global setting options
+		register_setting(
+			'fiwds_option_group', // Option group
+			'fiwds_options', // Option name
+			array( $this, 'sanitize' ) // Sanitize
+		);
+		// Adding a section
+		add_settings_section(
+			'fiwds_settings_section', // ID
+			'Edit settings for each of your post types', // Title
+			array( $this, 'print_section_info' ), // Callback
+			'fiwds-setting-admin' // Page
+		);
 		// Iterate through public posts types registered on the website, which are using native featured images. Then, display forms for each of them.
 		$post_types = get_post_types( array( 'public' => true ), 'objects' );
 		foreach ( $post_types as $type => $obj ) {
 			if ( post_type_supports( $type, 'thumbnail' ) ) {
-				// Registering global setting options
-				register_setting(
-					'fiwds_' . $obj->name . '_option_group', // Option group
-					'fiwds_' . $obj->name . '_options', // Option name
-					array( $this, 'sanitize' ) // Sanitize
-				);
-				// Adding a section
-				add_settings_section(
-					'fiwds_' . $obj->name . '_settings_section', // ID
-					'Featured images settings for ' . $obj->labels->name, // Title
-					array( $this, 'print_section_info' ), // Callback
-					'fiwds-setting-admin' // Page
-				);
 				// Adding checkbox required featured image option
 				add_settings_field(
-					'fiwds_checkbox_img_required', // ID
+					'fiwds_' . $obj->name . '_checkbox_img_required', // ID
 					'Require featured image on ' . $obj->labels->name, // Title
 					array( $this, 'fiwds_checkbox_img_required_callback' ), // Callback
 					'fiwds-setting-admin', // Page
-					'fiwds_' . $obj->name . '_settings_section' // Section
+					'fiwds_settings_section', // Section
+					array('fiwds_post_type' => $obj->name)
 				);      
 				// Adding dimensionned size option
 				add_settings_field(
-					'fiwds_checkbox_size_required', // ID
+					'fiwds_' . $obj->name . '_checkbox_size_required', // ID
 					'Set minimum size for ' . $obj->labels->name, // Title
 					array( $this, 'fiwds_checkbox_size_required_callback' ), // Callback
 					'fiwds-setting-admin', // Page
-					'fiwds_' . $obj->name . '_settings_section' // Section
+					'fiwds_settings_section', // Section
+					array('fiwds_post_type' => $obj->name)
 				);      
 				// Adding minimal width option
 				add_settings_field(
-					'fiwds_minimal_width',
+					'fiwds_' . $obj->name . '_minimal_width',
 					'Set minimal width',
 					array( $this, 'fiwds_minimal_width_callback' ),
 					'fiwds-setting-admin',
-					'fiwds_' . $obj->name . '_settings_section'
+					'fiwds_settings_section',
+					array('fiwds_post_type' => $obj->name)
 				);
 				// Adding maximal width option
 				add_settings_field(
-					'fiwds_maximal_width',
+					'fiwds_' . $obj->name . '_maximal_width',
 					'Set maximal width',
 					array( $this, 'fiwds_maximal_width_callback' ),
 					'fiwds-setting-admin',
-					'fiwds_' . $obj->name . '_settings_section'
+					'fiwds_settings_section',
+					array('fiwds_post_type' => $obj->name)
 				);
 				// Adding minimal height option
 				add_settings_field(
-					'fiwds_minimal_height',
+					'fiwds_' . $obj->name . '_minimal_height',
 					'Set minimal height',
 					array( $this, 'fiwds_minimal_height_callback' ),
 					'fiwds-setting-admin',
-					'fiwds_' . $obj->name . '_settings_section'
+					'fiwds_settings_section',
+					array('fiwds_post_type' => $obj->name)
 				);
 				// Adding maximal height option
 				add_settings_field(
-					'fiwds_maximal_height',
+					'fiwds_' . $obj->name . '_maximal_height',
 					'Set maximal height',
 					array( $this, 'fiwds_maximal_height_callback' ),
 					'fiwds-setting-admin',
-					'fiwds_' . $obj->name . '_settings_section'
+					'fiwds_settings_section',
+					array('fiwds_post_type' => $obj->name)
 				);
 			}
 		}
@@ -129,71 +128,89 @@ class FiwdsSettingsPage {
 	// Fields sanitization – @param array $input Contains all settings fields as array keys
 	public function sanitize( $input ) {
 		$new_input = array();
-		if( isset( $input['fiwds_checkbox_img_required'] ) ) {
-			$new_input['fiwds_checkbox_img_required'] = absint( $input['fiwds_checkbox_img_required'] );
+		// Iterate through public posts types registered on the website, which are using native featured images. Then, display forms for each of them.
+		$post_types = get_post_types( array( 'public' => true ), 'objects' );
+		foreach ( $post_types as $type => $obj ) {
+			if ( post_type_supports( $type, 'thumbnail' ) ) {
+				if( isset( $input['fiwds_' . $obj->name . '_checkbox_img_required'] ) ) {
+					$new_input['fiwds_' . $obj->name . '_checkbox_img_required'] = absint( $input['fiwds_' . $obj->name . '_checkbox_img_required'] );
+				}
+				if( isset( $input['fiwds_' . $obj->name . '_checkbox_size_required'] ) ) {
+					$new_input['fiwds_' . $obj->name . '_checkbox_size_required'] = absint( $input['fiwds_' . $obj->name . '_checkbox_size_required'] );
+				}
+				if( isset( $input['fiwds_' . $obj->name . '_minimal_width'] ) ) {
+					$new_input['fiwds_' . $obj->name . '_minimal_width'] = absint( $input['fiwds_' . $obj->name . '_minimal_width'] );
+				}
+				if( isset( $input['fiwds_' . $obj->name . '_maximal_width'] ) ) {
+					$new_input['fiwds_' . $obj->name . '_maximal_width'] = absint( $input['fiwds_' . $obj->name . '_maximal_width'] );
+				}
+				if( isset( $input['fiwds_' . $obj->name . '_minimal_height'] ) ) {
+					$new_input['fiwds_' . $obj->name . '_minimal_height'] = absint( $input['fiwds_' . $obj->name . '_minimal_height'] );
+				}
+				if( isset( $input['fiwds_' . $obj->name . '_maximal_height'] ) ) {
+					$new_input['fiwds_' . $obj->name . '_maximal_height'] = absint( $input['fiwds_' . $obj->name . '_maximal_height'] );
+				}
+				return $new_input;
+			}
 		}
-		if( isset( $input['fiwds_checkbox_size_required'] ) ) {
-			$new_input['fiwds_checkbox_size_required'] = absint( $input['fiwds_checkbox_size_required'] );
-		}
-		if( isset( $input['fiwds_minimal_width'] ) ) {
-			$new_input['fiwds_minimal_width'] = absint( $input['fiwds_minimal_width'] );
-		}
-		if( isset( $input['fiwds_maximal_width'] ) ) {
-			$new_input['fiwds_maximal_width'] = absint( $input['fiwds_maximal_width'] );
-		}
-		if( isset( $input['fiwds_minimal_height'] ) ) {
-			$new_input['fiwds_minimal_height'] = absint( $input['fiwds_minimal_height'] );
-		}
-		if( isset( $input['fiwds_maximal_height'] ) ) {
-			$new_input['fiwds_maximal_height'] = absint( $input['fiwds_maximal_height'] );
-		}
-		return $new_input;
 	}
 	
 	// Prints ce section text
 	public function print_section_info() {
-		echo __('Enter your fiwds settings below:');
+		// Nothing to display, lol
 	}
 	
 	// Get the settings option array and print one of its values
-	public function fiwds_checkbox_img_required_callback() {
-		echo '<input type="checkbox" id="fiwds_checkbox_img_required" name="fiwds_options[fiwds_checkbox_img_required]" value="1"'. checked(isset($this->options['fiwds_checkbox_img_required']), true, false) .' />';
+	public function fiwds_checkbox_img_required_callback($args) {
+		echo '
+			<input 
+			type="checkbox" 
+			id="fiwds_checkbox_img_required" 
+			name="fiwds_options[fiwds_'.$args['fiwds_post_type'].'_checkbox_img_required]" 
+			value="1"'. checked(isset($this->options['fiwds_'.$args['fiwds_post_type'].'_checkbox_img_required']), true, false) .' 
+			/>';
 	}
 
 	// Get the settings option array and print one of its values
-	public function fiwds_checkbox_size_required_callback() {
-		echo '<input type="checkbox" id="fiwds_checkbox_size_required" name="fiwds_options[fiwds_checkbox_size_required]" value="1"'. checked(isset($this->options['fiwds_checkbox_size_required']), true, false) .' />';
+	public function fiwds_checkbox_size_required_callback($args) {
+		echo '
+			<input 
+			type="checkbox" 
+			id="fiwds_checkbox_size_required" 
+			name="fiwds_options[fiwds_'.$args['fiwds_post_type'].'_checkbox_size_required]" 
+			value="1"'. checked(isset($this->options['fiwds_'.$args['fiwds_post_type'].'_checkbox_size_required']), true, false) .' 
+			/>';
 	}
 	
 	// Get the settings option array and print one of its values
-	public function fiwds_minimal_width_callback() {
+	public function fiwds_minimal_width_callback($args) {
 		printf(
-			'<input type="text" id="title" name="fiwds_options[fiwds_minimal_width]" value="%s" />',
-			isset( $this->options['fiwds_minimal_width'] ) ? esc_attr( $this->options['fiwds_minimal_width']) : ''
+			'<input type="text" id="fiwds_option_'.$args['fiwds_post_type'].'" name="fiwds_options[fiwds_'.$args['fiwds_post_type'].'_minimal_width]" value="%s" />',
+			isset( $this->options['fiwds_'.$args['fiwds_post_type'].'_minimal_width'] ) ? esc_attr( $this->options['fiwds_'.$args['fiwds_post_type'].'_minimal_width']) : ''
 		);
 	}
 
 	// Get the settings option array and print one of its values
-	public function fiwds_maximal_width_callback() {
+	public function fiwds_maximal_width_callback($args) {
 		printf(
-			'<input type="text" id="title" name="fiwds_options[fiwds_maximal_width]" value="%s" />',
-			isset( $this->options['fiwds_maximal_width'] ) ? esc_attr( $this->options['fiwds_maximal_width']) : ''
+			'<input type="text" id="fiwds_option_'.$args['fiwds_post_type'].'" name="fiwds_options[fiwds_'.$args['fiwds_post_type'].'_maximal_width]" value="%s" />',
+			isset( $this->options['fiwds_'.$args['fiwds_post_type'].'_maximal_width'] ) ? esc_attr( $this->options['fiwds_'.$args['fiwds_post_type'].'_maximal_width']) : ''
 		);
 	}
 
 	// Get the settings option array and print one of its values
-	public function fiwds_minimal_height_callback() {
+	public function fiwds_minimal_height_callback($args) {
 		printf(
-			'<input type="text" id="title" name="fiwds_options[fiwds_minimal_height]" value="%s" />',
-			isset( $this->options['fiwds_minimal_height'] ) ? esc_attr( $this->options['fiwds_minimal_height']) : ''
+			'<input type="text" id="fiwds_option_'.$args['fiwds_post_type'].'" name="fiwds_options[fiwds_'.$args['fiwds_post_type'].'_minimal_height]" value="%s" />',
+			isset( $this->options['fiwds_'.$args['fiwds_post_type'].'_minimal_height'] ) ? esc_attr( $this->options['fiwds_'.$args['fiwds_post_type'].'_minimal_height']) : ''
 		);
 	}
 
 	// Get the settings option array and print one of its values
-	public function fiwds_maximal_height_callback() {
+	public function fiwds_maximal_height_callback($args) {
 		printf(
-			'<input type="text" id="title" name="fiwds_options[fiwds_maximal_height]" value="%s" />',
-			isset( $this->options['fiwds_maximal_height'] ) ? esc_attr( $this->options['fiwds_maximal_height']) : ''
+			'<input type="text" id="fiwds_option_'.$args['fiwds_post_type'].'" name="fiwds_options[fiwds_'.$args['fiwds_post_type'].'_maximal_height]" value="%s" />',
+			isset( $this->options['fiwds_'.$args['fiwds_post_type'].'_maximal_height'] ) ? esc_attr( $this->options['fiwds_'.$args['fiwds_post_type'].'_maximal_height']) : ''
 		);
 	}
 	
