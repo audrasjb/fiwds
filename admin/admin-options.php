@@ -77,7 +77,7 @@ class FiwdsSettingsPage {
 				// Adding checkbox required featured image option
 				add_settings_field(
 					'fiwds_checkbox_img_required', // ID
-					'Check it to require featured image', // Title
+					'Require featured image on ' . $obj->labels->name, // Title
 					array( $this, 'fiwds_checkbox_img_required_callback' ), // Callback
 					'fiwds-setting-admin', // Page
 					'fiwds_' . $obj->name . '_settings_section' // Section
@@ -85,7 +85,7 @@ class FiwdsSettingsPage {
 				// Adding dimensionned size option
 				add_settings_field(
 					'fiwds_checkbox_size_required', // ID
-					'Check it to set minimum size for posts', // Title
+					'Set minimum size for ' . $obj->labels->name, // Title
 					array( $this, 'fiwds_checkbox_size_required_callback' ), // Callback
 					'fiwds-setting-admin', // Page
 					'fiwds_' . $obj->name . '_settings_section' // Section
