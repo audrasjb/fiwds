@@ -17,13 +17,10 @@ if ( ! defined( 'WPINC' ) ) {
 // Get plugin admin option page
 require_once('admin/admin-options.php');
 
-add_action( 'admin_init', 'fiwds_enqueue_admin_options_js' );
-function fiwds_enqueue_admin_options_js() {
-}
-
-add_action( 'transition_post_status', 'fiwds_guard', 10, 3 );
-function fiwds_guard( $new_status, $old_status, $post ) {
-    if ( $new_status === 'publish' && fiwds_should_stop_post_publishing( $post ) ) {
+// Hook on transition post status when publishing attemps
+add_action( 'transition_post_status', 'fiwds_look_for_transition_post_status', 10, 3 );
+function fiwds_look_for_transition_post_status( $new_status, $old_status, $post ) {
+    if ( $new_status === 'publish' && fiwds_preserve_from_publishing( $post ) ) {
         wp_die( fiwds_get_warning_message() );
     }
 }
@@ -40,6 +37,7 @@ function fiwds_enqueue_edit_screen_js( $hook ) {
     }
 
     if ( fiwds_is_supported_post_type( $post ) && fiwds_is_in_enforcement_window( $post ) ) {
+        // Load edit-post JS for FIWDS
         wp_register_script( 'fiwds-post-edit-js', plugins_url( '/admin/js/fiwds-post-edit.js', __FILE__ ), array( 'jquery' ) );
         wp_enqueue_script( 'fiwds-post-edit-js' );
 
@@ -48,9 +46,9 @@ function fiwds_enqueue_edit_screen_js( $hook ) {
             'fiwds-admin-js',
             'passedFromServer',
             array(
-                'jsWarningHtml' => __( '<strong>This entry has no featured image.</strong> Please set one. You need to set a featured image before publishing.', 'fiwds' ),
+                'jsWarningHtml' => __( '<strong>This entry has no featured image.</strong>', 'fiwds' ),
                 'jsSmallHtml' => sprintf(
-                    __( '<strong>This entry has a featured image that is too small.</strong> Please use an image that is at least %s x %s pixels.', 'fiwds' ),
+                    __( '<strong>Your featured image is too small.</strong> Please use an image that is at least %s x %s pixels.', 'fiwds' ),
                     $minimum_size['width'],
                     $minimum_size['height']
                 ),
@@ -76,11 +74,7 @@ function fiwds_textdomain_init() {
     );
 }
 
-/**
- * These are helpers that aren't ever registered with events
- */
-
-function fiwds_should_stop_post_publishing( $post ) {
+function fiwds_preserve_from_publishing( $post ) {
     $is_watched_post_type = fiwds_is_supported_post_type( $post );
     $is_after_enforcement_time = fiwds_is_in_enforcement_window( $post );
     $large_enough_image_attached = fiwds_post_has_large_enough_image_attached( $post );
