@@ -40,7 +40,14 @@ class FiwdsSettingsPage {
 				<?php
 				// This prints out all hidden setting fields
 				settings_fields( 'fiwds_option_group' );
-				do_settings_sections( 'fiwds-setting-admin' );
+				// Iterate through public posts types registered on the website, which are using native featured images. Then, display forms for each of them.
+				$post_types = get_post_types( array( 'public' => true ), 'objects' );
+				foreach ( $post_types as $type => $obj ) {
+					if ( post_type_supports( $type, 'thumbnail' ) ) {
+						// register settings for this post type
+						do_settings_sections( 'fiwds-setting-admin' );
+					}
+				}
 				submit_button();
 				?>
 			</form>
@@ -50,67 +57,73 @@ class FiwdsSettingsPage {
     
     // Register and add settings
     public function fiwds_page_init() {
-		// Registering global setting options
-		register_setting(
-			'fiwds_option_group', // Option group
-			'fiwds_options', // Option name
-			array( $this, 'sanitize' ) // Sanitize
-		);
-		// Adding a section
-		add_settings_section(
-			'fiwds_settings_section', // ID
-			'My fiwds Settings', // Title
-			array( $this, 'print_section_info' ), // Callback
-			'fiwds-setting-admin' // Page
-		);
-		// Adding checkbox required featured image option
-		add_settings_field(
-			'fiwds_checkbox_img_required', // ID
-			'Check it to require featured image', // Title
-			array( $this, 'fiwds_checkbox_img_required_callback' ), // Callback
-			'fiwds-setting-admin', // Page
-			'fiwds_settings_section' // Section
-		);      
-		// Adding dimensionned size option
-		add_settings_field(
-			'fiwds_checkbox_size_required', // ID
-			'Check it to set minimum size for posts', // Title
-			array( $this, 'fiwds_checkbox_size_required_callback' ), // Callback
-			'fiwds-setting-admin', // Page
-			'fiwds_settings_section' // Section
-		);      
-		// Adding minimal width option
-		add_settings_field(
-			'fiwds_minimal_width',
-			'Set minimal width',
-			array( $this, 'fiwds_minimal_width_callback' ),
-			'fiwds-setting-admin',
-			'fiwds_settings_section'
-		);
-		// Adding maximal width option
-		add_settings_field(
-			'fiwds_maximal_width',
-			'Set maximal width',
-			array( $this, 'fiwds_maximal_width_callback' ),
-			'fiwds-setting-admin',
-			'fiwds_settings_section'
-		);
-		// Adding minimal height option
-		add_settings_field(
-			'fiwds_minimal_height',
-			'Set minimal height',
-			array( $this, 'fiwds_minimal_height_callback' ),
-			'fiwds-setting-admin',
-			'fiwds_settings_section'
-		);
-		// Adding maximal height option
-		add_settings_field(
-			'fiwds_maximal_height',
-			'Set maximal height',
-			array( $this, 'fiwds_maximal_height_callback' ),
-			'fiwds-setting-admin',
-			'fiwds_settings_section'
-		);
+		// Iterate through public posts types registered on the website, which are using native featured images. Then, display forms for each of them.
+		$post_types = get_post_types( array( 'public' => true ), 'objects' );
+		foreach ( $post_types as $type => $obj ) {
+			if ( post_type_supports( $type, 'thumbnail' ) ) {
+				// Registering global setting options
+				register_setting(
+					'fiwds_' . $obj->name . '_option_group', // Option group
+					'fiwds_' . $obj->name . '_options', // Option name
+					array( $this, 'sanitize' ) // Sanitize
+				);
+				// Adding a section
+				add_settings_section(
+					'fiwds_' . $obj->name . '_settings_section', // ID
+					'Featured images settings for ' . $obj->labels->name, // Title
+					array( $this, 'print_section_info' ), // Callback
+					'fiwds-setting-admin' // Page
+				);
+				// Adding checkbox required featured image option
+				add_settings_field(
+					'fiwds_checkbox_img_required', // ID
+					'Check it to require featured image', // Title
+					array( $this, 'fiwds_checkbox_img_required_callback' ), // Callback
+					'fiwds-setting-admin', // Page
+					'fiwds_' . $obj->name . '_settings_section' // Section
+				);      
+				// Adding dimensionned size option
+				add_settings_field(
+					'fiwds_checkbox_size_required', // ID
+					'Check it to set minimum size for posts', // Title
+					array( $this, 'fiwds_checkbox_size_required_callback' ), // Callback
+					'fiwds-setting-admin', // Page
+					'fiwds_' . $obj->name . '_settings_section' // Section
+				);      
+				// Adding minimal width option
+				add_settings_field(
+					'fiwds_minimal_width',
+					'Set minimal width',
+					array( $this, 'fiwds_minimal_width_callback' ),
+					'fiwds-setting-admin',
+					'fiwds_' . $obj->name . '_settings_section'
+				);
+				// Adding maximal width option
+				add_settings_field(
+					'fiwds_maximal_width',
+					'Set maximal width',
+					array( $this, 'fiwds_maximal_width_callback' ),
+					'fiwds-setting-admin',
+					'fiwds_' . $obj->name . '_settings_section'
+				);
+				// Adding minimal height option
+				add_settings_field(
+					'fiwds_minimal_height',
+					'Set minimal height',
+					array( $this, 'fiwds_minimal_height_callback' ),
+					'fiwds-setting-admin',
+					'fiwds_' . $obj->name . '_settings_section'
+				);
+				// Adding maximal height option
+				add_settings_field(
+					'fiwds_maximal_height',
+					'Set maximal height',
+					array( $this, 'fiwds_maximal_height_callback' ),
+					'fiwds-setting-admin',
+					'fiwds_' . $obj->name . '_settings_section'
+				);
+			}
+		}
 	}
 	
 	// Fields sanitization – @param array $input Contains all settings fields as array keys
@@ -139,7 +152,7 @@ class FiwdsSettingsPage {
 	
 	// Prints ce section text
 	public function print_section_info() {
-		echo 'Enter your fiwds settings for POSTS below:';
+		echo __('Enter your fiwds settings below:');
 	}
 	
 	// Get the settings option array and print one of its values
