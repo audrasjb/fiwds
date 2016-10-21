@@ -56,33 +56,33 @@ class FiwdsSettingsPage {
 			'fiwds_options', // Option name
 			array( $this, 'sanitize' ) // Sanitize
 		);
-		// Adding a section
-		add_settings_section(
-			'fiwds_settings_section', // ID
-			'Edit settings for each of your post types', // Title
-			array( $this, 'print_section_info' ), // Callback
-			'fiwds-setting-admin' // Page
-		);
 		// Iterate through public posts types registered on the website, which are using native featured images. Then, display forms for each of them.
 		$post_types = get_post_types( array( 'public' => true ), 'objects' );
 		foreach ( $post_types as $type => $obj ) {
 			if ( post_type_supports( $type, 'thumbnail' ) ) {
+				// Adding a section
+				add_settings_section(
+					'fiwds_' . $obj->name . '_settings_section', // ID
+					'Edit settings for ' . $obj->labels->name, // Title
+					array( $this, 'print_section_info' ), // Callback
+					'fiwds-setting-admin' // Page
+				);
 				// Adding checkbox required featured image option
 				add_settings_field(
 					'fiwds_' . $obj->name . '_checkbox_img_required', // ID
-					'Require featured image on ' . $obj->labels->name, // Title
+					'Require featured image', // Title
 					array( $this, 'fiwds_checkbox_img_required_callback' ), // Callback
 					'fiwds-setting-admin', // Page
-					'fiwds_settings_section', // Section
+					'fiwds_' . $obj->name . '_settings_section', // Section
 					array('fiwds_post_type' => $obj->name)
 				);      
 				// Adding dimensionned size option
 				add_settings_field(
 					'fiwds_' . $obj->name . '_checkbox_size_required', // ID
-					'Set minimum size for ' . $obj->labels->name, // Title
+					'Set determined sizes', // Title
 					array( $this, 'fiwds_checkbox_size_required_callback' ), // Callback
 					'fiwds-setting-admin', // Page
-					'fiwds_settings_section', // Section
+					'fiwds_' . $obj->name . '_settings_section', // Section
 					array('fiwds_post_type' => $obj->name)
 				);      
 				// Adding minimal width option
@@ -91,7 +91,7 @@ class FiwdsSettingsPage {
 					'Set minimal width',
 					array( $this, 'fiwds_minimal_width_callback' ),
 					'fiwds-setting-admin',
-					'fiwds_settings_section',
+					'fiwds_' . $obj->name . '_settings_section',
 					array('fiwds_post_type' => $obj->name)
 				);
 				// Adding maximal width option
@@ -100,7 +100,7 @@ class FiwdsSettingsPage {
 					'Set maximal width',
 					array( $this, 'fiwds_maximal_width_callback' ),
 					'fiwds-setting-admin',
-					'fiwds_settings_section',
+					'fiwds_' . $obj->name . '_settings_section',
 					array('fiwds_post_type' => $obj->name)
 				);
 				// Adding minimal height option
@@ -109,7 +109,7 @@ class FiwdsSettingsPage {
 					'Set minimal height',
 					array( $this, 'fiwds_minimal_height_callback' ),
 					'fiwds-setting-admin',
-					'fiwds_settings_section',
+					'fiwds_' . $obj->name . '_settings_section',
 					array('fiwds_post_type' => $obj->name)
 				);
 				// Adding maximal height option
@@ -118,7 +118,7 @@ class FiwdsSettingsPage {
 					'Set maximal height',
 					array( $this, 'fiwds_maximal_height_callback' ),
 					'fiwds-setting-admin',
-					'fiwds_settings_section',
+					'fiwds_' . $obj->name . '_settings_section',
 					array('fiwds_post_type' => $obj->name)
 				);
 			}
