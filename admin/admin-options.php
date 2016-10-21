@@ -150,9 +150,9 @@ class FiwdsSettingsPage {
 				if( isset( $input['fiwds_' . $obj->name . '_maximal_height'] ) ) {
 					$new_input['fiwds_' . $obj->name . '_maximal_height'] = absint( $input['fiwds_' . $obj->name . '_maximal_height'] );
 				}
-				return $new_input;
 			}
 		}
+		return $new_input;
 	}
 	
 	// Prints ce section text
@@ -167,8 +167,9 @@ class FiwdsSettingsPage {
 			type="checkbox" 
 			id="fiwds_'.$args['fiwds_post_type'].'_checkbox_img_required" 
 			name="fiwds_options[fiwds_'.$args['fiwds_post_type'].'_checkbox_img_required]" 
-			value="1"'. checked(isset($this->options['fiwds_'.$args['fiwds_post_type'].'_checkbox_img_required']), true, false) .' 
-			/>';
+			value="1"'. 
+			checked(isset($this->options['fiwds_'.$args['fiwds_post_type'].'_checkbox_img_required']), true, false) .
+			' />';
 	}
 
 	// Get the settings option array and print one of its values
@@ -180,7 +181,6 @@ class FiwdsSettingsPage {
 			name="fiwds_options[fiwds_'.$args['fiwds_post_type'].'_checkbox_size_required]" 
 			value="1"'. checked(isset($this->options['fiwds_'.$args['fiwds_post_type'].'_checkbox_size_required']), true, false) .' 
 			/>';
-			var_dump($this);
 	}
 	
 	// Get the settings option array and print one of its values
