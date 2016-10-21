@@ -4,14 +4,10 @@ jQuery(document).ready(function($) {
 	$( '.fiwds_size_options' ).hide();
 	$( '.fiwds_size_details' ).hide();
 
-	if ($( 'input[name="chk[]"]:checked' ).length == 0) {
-		alert('checked');
-	}
-	
 	// When FIWDS primary checkbox change, display or hide secondary option checkbox
 	$('.fiwds_checkbox_img_required').change(function() {
 		if ($(this).is(':checked')) {
-			$(this).closest('.fiwds_checkbox_required_parent').next('.fiwds_size_options').slideDown();
+			$(this).closest('tr').next('tr').slideDown();
 		} else {
 			$(this).closest('.fiwds_checkbox_required_parent').next('.fiwds_size_options').slideUp();
 		}
