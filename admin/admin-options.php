@@ -180,6 +180,7 @@ class FiwdsSettingsPage {
 			name="fiwds_options[fiwds_'.$args['fiwds_post_type'].'_checkbox_size_required]" 
 			value="1"'. checked(isset($this->options['fiwds_'.$args['fiwds_post_type'].'_checkbox_size_required']), true, false) .' 
 			/>';
+			var_dump($this);
 	}
 	
 	// Get the settings option array and print one of its values
