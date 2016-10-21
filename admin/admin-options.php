@@ -139,16 +139,36 @@ class FiwdsSettingsPage {
 					$new_input['fiwds_' . $obj->name . '_checkbox_size_required'] = absint( $input['fiwds_' . $obj->name . '_checkbox_size_required'] );
 				}
 				if( isset( $input['fiwds_' . $obj->name . '_minimal_width'] ) ) {
-					$new_input['fiwds_' . $obj->name . '_minimal_width'] = absint( $input['fiwds_' . $obj->name . '_minimal_width'] );
+					$verif = absint( $input['fiwds_' . $obj->name . '_minimal_width'] );
+					if ($verif == '0') {
+						$new_input['fiwds_' . $obj->name . '_minimal_width'] = '';
+					} else {
+						$new_input['fiwds_' . $obj->name . '_minimal_width'] = $verif;
+					}
 				}
 				if( isset( $input['fiwds_' . $obj->name . '_maximal_width'] ) ) {
-					$new_input['fiwds_' . $obj->name . '_maximal_width'] = absint( $input['fiwds_' . $obj->name . '_maximal_width'] );
+					$verif = absint( $input['fiwds_' . $obj->name . '_maximal_width'] );
+					if ($verif == '0') {
+						$new_input['fiwds_' . $obj->name . '_maximal_width'] = '';
+					} else {
+						$new_input['fiwds_' . $obj->name . '_maximal_width'] = $verif;
+					}
 				}
 				if( isset( $input['fiwds_' . $obj->name . '_minimal_height'] ) ) {
-					$new_input['fiwds_' . $obj->name . '_minimal_height'] = absint( $input['fiwds_' . $obj->name . '_minimal_height'] );
+					$verif = absint( $input['fiwds_' . $obj->name . '_minimal_height'] );
+					if ($verif == '0') {
+						$new_input['fiwds_' . $obj->name . '_minimal_height'] = '';
+					} else {
+						$new_input['fiwds_' . $obj->name . '_minimal_height'] = $verif;
+					}
 				}
 				if( isset( $input['fiwds_' . $obj->name . '_maximal_height'] ) ) {
-					$new_input['fiwds_' . $obj->name . '_maximal_height'] = absint( $input['fiwds_' . $obj->name . '_maximal_height'] );
+					$verif = absint( $input['fiwds_' . $obj->name . '_maximal_height'] );
+					if ($verif == '0') {
+						$new_input['fiwds_' . $obj->name . '_maximal_height'] = '';
+					} else {
+						$new_input['fiwds_' . $obj->name . '_maximal_height'] = $verif;
+					}
 				}
 			}
 		}
