@@ -62,7 +62,7 @@ function fiwds_enqueue_edit_screen_js( $hook ) {
                     $min_height
                 ),
                 'jsTallHtml' => sprintf(
-                    __( '<strong>Your featured image is too big.</strong> Please use an image that is at maximally %s x %s pixels.', 'fiwds' ),
+                    __( '<strong>Your featured image is too big.</strong> Please use an image that is less than %s x %s pixels.', 'fiwds' ),
                     $max_width,
                     $max_height
                 ),
