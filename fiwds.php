@@ -41,19 +41,26 @@ function fiwds_enqueue_edit_screen_js( $hook ) {
         wp_register_script( 'fiwds-post-edit-js', plugins_url( '/admin/js/fiwds-post-edit.js', __FILE__ ), array( 'jquery' ) );
         wp_enqueue_script( 'fiwds-post-edit-js' );
 
-        $minimum_size = get_option( 'fiwds_minimum_size' );
+        $fiwds_options = get_option('fiwds_options');
         wp_localize_script(
             'fiwds-admin-js',
             'passedFromServer',
             array(
-                'jsWarningHtml' => __( '<strong>This entry has no featured image.</strong>', 'fiwds' ),
+                'jsWarningHtml' => __( '<strong>This entry requires any featured image.</strong>', 'fiwds' ),
                 'jsSmallHtml' => sprintf(
                     __( '<strong>Your featured image is too small.</strong> Please use an image that is at least %s x %s pixels.', 'fiwds' ),
-                    $minimum_size['width'],
-                    $minimum_size['height']
+                    $min_widht,
+                    $min_height
                 ),
-                'width' => $minimum_size['width'],
-                'height' => $minimum_size['height'],
+                'jsTallHtml' => sprintf(
+                    __( '<strong>Your featured image is too big.</strong> Please use an image that is at maximally %s x %s pixels.', 'fiwds' ),
+                    $max_width,
+                    $max_height
+                ),
+                'min_width' => $min_widht,
+                'min_height' => $min_height,
+                'max_width' => $max_width,
+                'max_height' => $max_height,
             )
         );
     }
