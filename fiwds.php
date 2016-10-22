@@ -42,7 +42,7 @@ function fiwds_enqueue_edit_screen_js( $hook ) {
         wp_enqueue_script( 'fiwds-post-edit-js' );
 		$current_post_type = get_post_type();
         $fiwds_options = get_option('fiwds_options');
-		$min_widht = $fiwds_options['fiwds_'.$current_post_type.'_minimal_width'];
+		$min_width = $fiwds_options['fiwds_'.$current_post_type.'_minimal_width'];
 		$min_height = $fiwds_options['fiwds_'.$current_post_type.'_minimal_height'];
 		$max_width = $fiwds_options['fiwds_'.$current_post_type.'_maximal_width'];
 		$max_height = $fiwds_options['fiwds_'.$current_post_type.'_maximal_height'];
@@ -53,7 +53,7 @@ function fiwds_enqueue_edit_screen_js( $hook ) {
                 'jsWarningHtml' => __( '<strong>This entry requires any featured image.</strong>', 'fiwds' ),
                 'jsSmallHtml' => sprintf(
                     __( '<strong>Your featured image is too small.</strong> Please use an image that is at least %s x %s pixels.', 'fiwds' ),
-                    $min_widht,
+                    $min_width,
                     $min_height
                 ),
                 'jsTallHtml' => sprintf(
@@ -61,7 +61,7 @@ function fiwds_enqueue_edit_screen_js( $hook ) {
                     $max_width,
                     $max_height
                 ),
-                'min_width' => $min_widht,
+                'min_width' => $min_width,
                 'min_height' => $min_height,
                 'max_width' => $max_width,
                 'max_height' => $max_height,
@@ -131,17 +131,16 @@ function fiwds_post_has_large_enough_image_attached( $post ) {
 function fiwds_get_warning_message() {
 	$current_post_type = get_post_type();
     $fiwds_options = get_option('fiwds_options');
-	$min_widht = $fiwds_options['fiwds_'.$current_post_type.'_minimal_width'];
+	$min_width = $fiwds_options['fiwds_'.$current_post_type.'_minimal_width'];
 	$min_height = $fiwds_options['fiwds_'.$current_post_type.'_minimal_height'];
 	$max_width = $fiwds_options['fiwds_'.$current_post_type.'_maximal_width'];
 	$max_height = $fiwds_options['fiwds_'.$current_post_type.'_maximal_height'];
-//    $minimum_size = get_option('fiwds_minimum_size');
-    if ( $minimum_size['width'] == 0 && $minimum_size['height'] == 0 ) {
+    if ( $min_width == 0 && $min_height == 0 ) {
         return __( 'You cannot publish without a featured image.', 'fiwds' );
     }
     return sprintf(
         __( 'You cannot publish without a featured image that is at least %s x %s pixels.', 'fiwds' ),
-        $minimum_size['width'],
-        $minimum_size['height']
+        $min_width,
+        $min_height
     );
 }
