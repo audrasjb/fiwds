@@ -40,17 +40,12 @@ function fiwds_enqueue_edit_screen_js( $hook ) {
         // Load edit-post JS for FIWDS
         wp_register_script( 'fiwds-post-edit-js', plugins_url( '/admin/js/fiwds-post-edit.js', __FILE__ ), array( 'jquery' ) );
         wp_enqueue_script( 'fiwds-post-edit-js' );
-
+		$current_post_type = get_post_type();
         $fiwds_options = get_option('fiwds_options');
-		$post_types = get_post_types( array( 'public' => true ), 'objects' );
-		foreach ( $post_types as $type => $obj ) {
-			if ( post_type_supports( $type, 'thumbnail' ) ) {
-				$min_widht[$obj->label] = $fiwds_options['fiwds_'.$obj->label.'_minimal_width'];
-				$min_height[$obj->label] = $fiwds_options['fiwds_'.$obj->label.'_minimal_height'];
-				$max_width[$obj->label] = $fiwds_options['fiwds_'.$obj->label.'_maximal_width'];
-				$max_height[$obj->label] = $fiwds_options['fiwds_'.$obj->label.'_maximal_height'];
-			}
-		}
+		$min_widht = $fiwds_options['fiwds_'.$current_post_type.'_minimal_width'];
+		$min_height = $fiwds_options['fiwds_'.$current_post_type.'_minimal_height'];
+		$max_width = $fiwds_options['fiwds_'.$current_post_type.'_maximal_width'];
+		$max_height = $fiwds_options['fiwds_'.$current_post_type.'_maximal_height'];
         wp_localize_script(
             'fiwds-admin-js',
             'passedFromServer',
