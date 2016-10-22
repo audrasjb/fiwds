@@ -36,7 +36,7 @@ function fiwds_enqueue_edit_screen_js( $hook ) {
         return;
     }
 
-    if ( fiwds_is_supported_post_type( $post ) && fiwds_is_in_enforcement_window( $post ) ) {
+    if (fiwds_is_supported_post_type($post)) {
         // Load edit-post JS for FIWDS
         wp_register_script( 'fiwds-post-edit-js', plugins_url( '/admin/js/fiwds-post-edit.js', __FILE__ ), array( 'jquery' ) );
         wp_enqueue_script( 'fiwds-post-edit-js' );
@@ -112,22 +112,6 @@ function fiwds_return_post_types() {
     return apply_filters( 'fiwds_post_types', $option );
 }
 
-function fiwds_is_in_enforcement_window( $post ) {
-    return strtotime($post->post_date) > fiwds_enforcement_start_time();
-}
-
-function fiwds_enforcement_start_time() {
-    $option = get_option( 'fiwds_enforcement_start', 'default' );
-    if ( $option === 'default' ) {
-        // added in 1.1.0, activation times for installations before
-        //  that release are set to two weeks prior to the first call
-        $existing_install_guessed_time = time() - ( 86400*14 );
-        add_option( 'fiwds_enforcement_start', $existing_install_guessed_time );
-        $option = $existing_install_guessed_time;
-    }
-    return apply_filters( 'fiwds_enforcement_start', (int)$option );
-}
-
 function fiwds_post_has_large_enough_image_attached( $post ) {
     $image_id = get_post_thumbnail_id( $post->ID );
     if ( $image_id === null ) {
@@ -145,8 +129,13 @@ function fiwds_post_has_large_enough_image_attached( $post ) {
 }
 
 function fiwds_get_warning_message() {
-    $minimum_size = get_option('fiwds_minimum_size');
-    // Legacy case
+	$current_post_type = get_post_type();
+    $fiwds_options = get_option('fiwds_options');
+	$min_widht = $fiwds_options['fiwds_'.$current_post_type.'_minimal_width'];
+	$min_height = $fiwds_options['fiwds_'.$current_post_type.'_minimal_height'];
+	$max_width = $fiwds_options['fiwds_'.$current_post_type.'_maximal_width'];
+	$max_height = $fiwds_options['fiwds_'.$current_post_type.'_maximal_height'];
+//    $minimum_size = get_option('fiwds_minimum_size');
     if ( $minimum_size['width'] == 0 && $minimum_size['height'] == 0 ) {
         return __( 'You cannot publish without a featured image.', 'fiwds' );
     }
