@@ -50,14 +50,14 @@ function fiwds_enqueue_edit_screen_js( $hook ) {
             'fiwds-admin-js',
             'passedFromServer',
             array(
-                'jsWarningHtml' => __( '<strong>This entry requires any featured image.</strong>', 'fiwds' ),
+                'jsWarningHtml' => __( '<strong>This entry requires a featured image before publishing.</strong>', 'fiwds' ),
                 'jsSmallHtml' => sprintf(
-                    __( '<strong>Your featured image is too small.</strong> Please use an image that is at least %s x %s pixels.', 'fiwds' ),
+                    __( '<strong>The featured image is too small.</strong> Please use an image that is at least %s x %s pixels.', 'fiwds' ),
                     $min_width,
                     $min_height
                 ),
                 'jsTallHtml' => sprintf(
-                    __( '<strong>Your featured image is too big.</strong> Please use an image that is less than %s x %s pixels.', 'fiwds' ),
+                    __( '<strong>The featured image is too big.</strong> Please use an image that is less than %s x %s pixels.', 'fiwds' ),
                     $max_width,
                     $max_height
                 ),
