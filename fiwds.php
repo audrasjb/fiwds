@@ -128,13 +128,22 @@ function fiwds_post_has_good_image_size( $post ) {
 	$min_height = $fiwds_options['fiwds_'.$current_post_type.'_minimal_height'];
 	$max_width = $fiwds_options['fiwds_'.$current_post_type.'_maximal_width'];
 	$max_height = $fiwds_options['fiwds_'.$current_post_type.'_maximal_height'];
-    if ( isset($min_width) && ($min_width > 0) && ($min_width != '') && $width >= $min_width ) {
-	    if ( isset($min_height) && ($min_height > 0) && ($min_height != '') && $height >= $min_height ) {
-        	return true;
+    if ( isset($min_width) && ($min_width > 0) && ($min_width != '') && $width > $min_width ) {
+       	return true;
+    }
+    if ( isset($min_height) && ($min_height > 0) && ($min_height != '') && $height > $min_height ) {
+       	return true;
+    }
+    if ( isset($max_width) && ($max_width > 0) && ($max_width != '') && $width < $max_width ) {
+       	return true;
+    }
+    if ( isset($max_height) && ($max_height > 0) && ($max_height != '') && $height < $max_height ) {
+       	return true;
     }
     return false;
 }
 
+// Display warning messages
 function fiwds_get_warning_message() {
 	$current_post_type = get_post_type();
     $fiwds_options = get_option('fiwds_options');
