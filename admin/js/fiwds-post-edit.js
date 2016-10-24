@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-
+/*
 	function checkImageReturnWarningMessageOrEmpty() {
 		var $img = $('#postimagediv').find('img');
 		if ($img.length === 0) {
@@ -47,5 +47,5 @@ jQuery(document).ready(function($) {
 
 	detectWarnFeaturedImage();
 	setInterval(detectWarnFeaturedImage, 800);
-
+*/
 });
