@@ -25,6 +25,7 @@ function fiwds_look_for_transition_post_status( $new_status, $old_status, $post 
     }
 }
 
+// Enqueue JS scripts to edit screen
 add_action( 'admin_enqueue_scripts', 'fiwds_enqueue_edit_screen_js' );
 function fiwds_enqueue_edit_screen_js( $hook ) {
 	// Load admin-options JS for FIWDS
@@ -70,12 +71,13 @@ function fiwds_enqueue_edit_screen_js( $hook ) {
     }
 }
 
-register_activation_hook( __FILE__, 'fiwds_set_default_on_activation' );
-function fiwds_set_default_on_activation() {
-    add_option( 'fiwds_post_types', array('post') );
-    add_option( 'fiwds_enforcement_start', time() );
+// Save the plugin's activation date on database
+register_activation_hook( __FILE__, 'fiwds_remember_date_of_activation' );
+function fiwds_remember_date_of_activation() {
+    add_option( 'fiwds_activation_date', time() );
 }
 
+// i18n
 add_action( 'plugins_loaded', 'fiwds_textdomain_init' );
 function fiwds_textdomain_init() {
     load_plugin_textdomain(
@@ -96,8 +98,17 @@ function fiwds_preserve_from_publishing( $post ) {
     return false;
 }
 
+// Check if the post type is supported by fiwds
 function fiwds_is_supported_post_type( $post ) {
-    return in_array( $post->post_type, fiwds_return_post_types() );
+    $get_fiwds_options = get_option('fiwds_'.$post->post_type.'_checkbox_img_required');
+    if ($get_fiwds_options) {
+		if ($get_fiwds_options == 1) {
+			return true;
+		} else {
+			return false;
+		}
+		return false;
+	}
 }
 
 function fiwds_return_post_types() {
