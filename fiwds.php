@@ -90,7 +90,7 @@ function fiwds_textdomain_init() {
 function fiwds_preserve_from_publishing( $post ) {
     $is_watched_post_type = fiwds_is_supported_post_type( $post );
     $is_after_enforcement_time = fiwds_is_in_enforcement_window( $post );
-    $large_enough_image_attached = fiwds_post_has_large_enough_image_attached( $post );
+    $fiwds_post_has_good_image_size = fiwds_post_has_good_image_size( $post );
 
     if ( $is_after_enforcement_time && $is_watched_post_type ) {
         return !$large_enough_image_attached;
@@ -98,9 +98,10 @@ function fiwds_preserve_from_publishing( $post ) {
     return false;
 }
 
-// Check if the post type is supported by fiwds
+// Check if current post type is supported by fiwds
 function fiwds_is_supported_post_type( $post ) {
-    $get_fiwds_options = get_option('fiwds_'.$post->post_type.'_checkbox_img_required');
+    $fiwds_options = get_option('fiwds_options');
+    $img_required = $fiwds_options('fiwds_'.$current_post_type.'_checkbox_img_required');
     if ($get_fiwds_options) {
 		if ($get_fiwds_options == 1) {
 			return true;
@@ -111,19 +112,8 @@ function fiwds_is_supported_post_type( $post ) {
 	}
 }
 
-function fiwds_return_post_types() {
-    $option = get_option( 'fiwds_post_types', 'default' );
-    if ( $option === 'default' ) {
-        $option = array( 'post' );
-        add_option( 'fiwds_post_types', $option );
-    } elseif ( $option === '' ) {
-        // For people who want the plugin on, but doing nothing
-        $option = array();
-    }
-    return apply_filters( 'fiwds_post_types', $option );
-}
-
-function fiwds_post_has_large_enough_image_attached( $post ) {
+// Check the dimensions of the post thumbnail
+function fiwds_post_has_good_image_size( $post ) {
     $image_id = get_post_thumbnail_id( $post->ID );
     if ( $image_id === null ) {
         return false;
@@ -131,10 +121,16 @@ function fiwds_post_has_large_enough_image_attached( $post ) {
     $image_meta = wp_get_attachment_image_src( $image_id, 'full' );
     $width = $image_meta[1];
     $height = $image_meta[2];
-    $minimum_size = get_option( 'fiwds_minimum_size' );
-
-    if ( $width >= $minimum_size['width'] && $height >=  $minimum_size['height'] ){
-        return true;
+    $fiwds_options = get_option('fiwds_options');
+    $img_required = $fiwds_options('fiwds_'.$current_post_type.'_checkbox_img_required');
+    $img_required = $fiwds_options('fiwds_'.$current_post_type.'_checkbox_size_required');
+	$min_width = $fiwds_options['fiwds_'.$current_post_type.'_minimal_width'];
+	$min_height = $fiwds_options['fiwds_'.$current_post_type.'_minimal_height'];
+	$max_width = $fiwds_options['fiwds_'.$current_post_type.'_maximal_width'];
+	$max_height = $fiwds_options['fiwds_'.$current_post_type.'_maximal_height'];
+    if ( isset($min_width) && ($min_width > 0) && ($min_width != '') && $width >= $min_width ) {
+	    if ( isset($min_height) && ($min_height > 0) && ($min_height != '') && $height >= $min_height ) {
+        	return true;
     }
     return false;
 }
@@ -142,16 +138,20 @@ function fiwds_post_has_large_enough_image_attached( $post ) {
 function fiwds_get_warning_message() {
 	$current_post_type = get_post_type();
     $fiwds_options = get_option('fiwds_options');
+    $img_required = $fiwds_options('fiwds_'.$current_post_type.'_checkbox_img_required');
+    $img_required = $fiwds_options('fiwds_'.$current_post_type.'_checkbox_size_required');
 	$min_width = $fiwds_options['fiwds_'.$current_post_type.'_minimal_width'];
 	$min_height = $fiwds_options['fiwds_'.$current_post_type.'_minimal_height'];
 	$max_width = $fiwds_options['fiwds_'.$current_post_type.'_maximal_width'];
 	$max_height = $fiwds_options['fiwds_'.$current_post_type.'_maximal_height'];
-    if ( $min_width == 0 && $min_height == 0 ) {
-        return __( 'You cannot publish without a featured image.', 'fiwds' );
-    }
-    return sprintf(
-        __( 'You cannot publish without a featured image that is at least %s x %s pixels.', 'fiwds' ),
-        $min_width,
-        $min_height
-    );
+    if ($img_required == 1) {
+	    if ( $min_width == 0 && $min_height == 0 ) {
+    	    return __( 'You cannot publish without a featured image.', 'fiwds' );
+    	}
+		return sprintf(
+        	__( 'You cannot publish without a featured image that is at least %s x %s pixels.', 'fiwds' ),
+			$min_width,
+			$min_height
+		);
+	}
 }
