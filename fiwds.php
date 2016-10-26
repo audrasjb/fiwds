@@ -100,14 +100,21 @@ function fiwds_preserve_from_publishing( $post ) {
 
 // Check if current post type is supported by fiwds
 function fiwds_is_supported_post_type( $post ) {
-    $fiwds_options = get_option('fiwds_options');
-    $img_required = $fiwds_options('fiwds_'.$current_post_type.'_checkbox_img_required');
-    if ($get_fiwds_options) {
-		if ($get_fiwds_options == 1) {
-			return true;
-		} else {
+    $fiwds_options = get_option('fiwds_options', 'option_dont_exists');
+    if ($fiwds_options != 'option_dont_exists') {
+	    if (isset($fiwds_options['fiwds_'.get_post_type($post->ID).'_checkbox_img_required'])) {
+		    $img_required = $fiwds_options['fiwds_'.get_post_type($post->ID).'_checkbox_img_required'];
+//			echo '<script>console.log('.$img_required.');</script>';
+			if ($img_required == 1) {
+				return true;
+			} else {
+				return false;
+			}
 			return false;
-		}
+	    } else {
+			return false;		    
+	    }
+	} else {
 		return false;
 	}
 }
