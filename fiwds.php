@@ -129,6 +129,7 @@ function fiwds_post_has_good_image_size( $post ) {
     $width = $image_meta[1];
     $height = $image_meta[2];
     $fiwds_options = get_option('fiwds_options');
+	// Problem here… :(
     if (isset($fiwds_options['fiwds_'.get_post_type($post->ID).'_checkbox_img_required'])) {
 	    $img_required = $fiwds_options('fiwds_'.get_post_type($post->ID).'_checkbox_img_required');
 	}
